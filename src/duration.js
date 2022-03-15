@@ -438,22 +438,16 @@ export default class Duration {
    * dur.toHuman({ unitDisplay: "short" }) //=> '1 day, 5 hr, 6 min'
    * ```
    */
-  toHuman(opts = {}) {
-    const l = orderedUnits
-      .map((unit) => {
-        const val = this.values[unit];
-        if (isUndefined(val)) {
-          return null;
-        }
-        return this.loc
-          .numberFormatter({ style: "unit", unitDisplay: "long", ...opts, unit: unit.slice(0, -1) })
-          .format(val);
-      })
-      .filter((n) => n);
-
-    return this.loc
-      .listFormatter({ type: "conjunction", style: opts.listStyle || "narrow", ...opts })
-      .format(l);
+  toHuman(duration, smallestUnit = "seconds" ) {
+    const l = orderedUnits;
+    const smallestIdx = l.indexOf(smallestUnit);
+    const dur = Duration.fromDurationLike(duration),
+      result = {};
+    const entries = Object.entries(dur.shiftTo(...units).normalize().toObject()).filter(([_unit, amount], idx) => amount > 0 && idx <= smallestIdx);
+      const dur2 = Duration.fromObject(
+        entries.length === 0 ? { [smallestUnit]: 0 } : Object.fromEntries(entries)
+      );
+    return dur2.toHuman();
   }
 
   /**
