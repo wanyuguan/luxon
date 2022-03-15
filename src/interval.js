@@ -124,21 +124,21 @@ export default class Interval {
    * @return {Interval}
    */
   static fromISO(text, opts) {
-    const [s, e] = (text || "").split("/", 2);
-    if (s && e) {
+    const [starting, ending] = (text || "").split("/", 2);
+    if (starting && ending) {
       let start, startIsValid;
       try {
-        start = DateTime.fromISO(s, opts);
+        start = DateTime.fromISO(starting, opts);
         startIsValid = start.isValid;
-      } catch (e) {
+      } catch (ending) {
         startIsValid = false;
       }
 
       let end, endIsValid;
       try {
-        end = DateTime.fromISO(e, opts);
+        end = DateTime.fromISO(ending, opts);
         endIsValid = end.isValid;
-      } catch (e) {
+      } catch (ending) {
         endIsValid = false;
       }
 
@@ -147,12 +147,12 @@ export default class Interval {
       }
 
       if (startIsValid) {
-        const dur = Duration.fromISO(e, opts);
+        const dur = Duration.fromISO(ending, opts);
         if (dur.isValid) {
           return Interval.after(start, dur);
         }
       } else if (endIsValid) {
-        const dur = Duration.fromISO(s, opts);
+        const dur = Duration.fromISO(starting, opts);
         if (dur.isValid) {
           return Interval.before(end, dur);
         }
@@ -163,11 +163,11 @@ export default class Interval {
 
   /**
    * Check if an object is an Interval. Works across context boundaries
-   * @param {object} o
+   * @param {object} obj
    * @return {boolean}
    */
-  static isInterval(o) {
-    return (o && o.isLuxonInterval) || false;
+  static isInterval(obj) {
+    return (obj && obj.isLuxonInterval) || false;
   }
 
   /**
