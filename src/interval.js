@@ -100,27 +100,19 @@ export default class Interval {
   }
 
   /**
-   * Create an Interval from a start DateTime and a Duration to extend to.
+   * Create an Interval from a start DateTime and a Duration to extend to or extend backwards 
    * @param {DateTime|Date|Object} start
    * @param {Duration|Object|number} duration - the length of the Interval.
+   * @param {boolean} extendForward - checking whether adding or minus from DateTime. 
    * @return {Interval}
    */
-  static after(start, duration) {
-    const dur = Duration.fromDurationLike(duration),
-      dt = friendlyDateTime(start);
-    return Interval.fromDateTimes(dt, dt.plus(dur));
-  }
-
-  /**
-   * Create an Interval from an end DateTime and a Duration to extend backwards to.
-   * @param {DateTime|Date|Object} end
-   * @param {Duration|Object|number} duration - the length of the Interval.
-   * @return {Interval}
-   */
-  static before(end, duration) {
-    const dur = Duration.fromDurationLike(duration),
-      dt = friendlyDateTime(end);
-    return Interval.fromDateTimes(dt.minus(dur), dt);
+   static createInterval(duration, extendForward) {
+    const dur = Duration.fromDurationLike(duration), dt = friendlyDateTime(start);
+    if (extendForward) {
+      return Interval.fromDateTimes(dt, dt.plus(dur));
+    } else {
+      return Interval.fromDateTimes(dt.minus(dur), dt);
+    }
   }
 
   /**
